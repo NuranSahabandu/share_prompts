@@ -24,3 +24,39 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.black_btn {
+  background-color: var(--foreground);
+  color: var(--background);
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+.logo_text {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.outline_btn {
+  border: 2px solid var(--foreground);
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 10px;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.dropdown_link {
+  font-size: 14px;
+  text-decoration: none;
+}
