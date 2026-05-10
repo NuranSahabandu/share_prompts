@@ -50,7 +50,7 @@ const Nav = () => {
 
               <Link href="/profile">
               <Image  
-                src="/assets/images/logo.svg" 
+                src={session?.user.image || "/assets/images/logo.svg" }
                 alt='profile image' 
                 className='object-contain rounded-full' 
                 width={37} 
@@ -80,7 +80,7 @@ const Nav = () => {
           {session?.user ? (
             <div className='flex'>
               <Image  
-                src="/assets/images/logo.svg" 
+                src={session?.user.image || "/assets/images/logo.svg" } 
                 alt='profile image' 
                 className='object-contain rounded-full' 
                 width={37} 
