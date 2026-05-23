@@ -14,7 +14,7 @@ const Nav = () => {
   const [providers, setProviders] =
   useState<Record<string, ClientSafeProvider> | null>(null);
 
-  const [togleDropdown, setToggleDropdown] = useState(false);
+  const [toggleDropdown, setToggleDropdown] = useState(false);
 
   useEffect(()=>{
     const fetchProviders = async ()=> {
@@ -50,7 +50,7 @@ const Nav = () => {
 
               <Link href="/profile">
               <Image  
-                src={session?.user.image || "/assets/images/logo.svg" }
+                src="/assets/images/logo.svg" 
                 alt='profile image' 
                 className='object-contain rounded-full' 
                 width={37} 
@@ -80,14 +80,14 @@ const Nav = () => {
           {session?.user ? (
             <div className='flex'>
               <Image  
-                src={session?.user.image || "/assets/images/logo.svg" } 
+                src="/assets/images/logo.svg" 
                 alt='profile image' 
                 className='object-contain rounded-full' 
                 width={37} 
                 height={37}
                 onClick={()=> setToggleDropdown((prev) => !prev)}
                 />
-              {togleDropdown && (
+              {toggleDropdown && (
                 <div className='dropdown'>
                   <Link href="/profile"
                     className='dropdown_link'

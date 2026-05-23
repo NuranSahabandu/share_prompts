@@ -4,12 +4,12 @@ import Link from 'next/link'
 interface FormProps {
   type: string
   post: {
-    prompts: string
+    prompt: string
     tag: string
   }
   setPost: React.Dispatch<
     React.SetStateAction<{
-      prompts: string
+      prompt: string
       tag: string
     }>
   >
@@ -38,9 +38,9 @@ const Form = ({ type, post, setPost, submitting, handleSubmit }: FormProps) => {
               Your AI Prompt
             </span>
             <textarea 
-              value={post.prompts}
+              value={post.prompt}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setPost({ ...post, prompts: e.target.value })
+                setPost({ ...post, prompt: e.target.value })
               }
               placeholder='write your prompt here...'
               required
