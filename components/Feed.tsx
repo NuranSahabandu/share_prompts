@@ -3,10 +3,23 @@
 import { useState, useEffect } from 'react'
 
 import PromptCard from './PromptCard';
-import { set } from 'mongoose';
+
+interface User {
+  _id: string;
+  email: string;
+  username: string;
+  image?: string;
+}
+
+interface Prompt {
+  _id: string;
+  creator: User;
+  prompt: string;
+  tag: string;
+}
 
 interface PromptCardListProps {
-  data: any[];
+  data: Prompt[];
   handleTagClick: () => void;
 }
 
@@ -26,10 +39,10 @@ const PromptCardList = ({ data, handleTagClick }: PromptCardListProps) => {
 
 const Feed = () => {
   const [searchText, setSearchText] = useState('');
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Prompt[]>([]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // setSearchText(e.target.value);
+    setSearchText(e.target.value);
   };
 
   useEffect(() => {
@@ -38,18 +51,19 @@ const Feed = () => {
       const data = await response.json();
       setPosts(data);
     }
+
+    fetchPosts();
   },[])
 
   return (
-    <section className="feed">
-      <form className='relative w-full flex-center'>
-        <input 
+    <section className='w-full flex flex-col items-center mt-16'>
+      <form className='relative w-full max-w-2xl flex items-center justify-center'>
+        <input
           type="text"
           placeholder='Search for a tag or a username'
           value={searchText}
           onChange={handleSearchChange}
-          required
-          className='search_input peer'
+          className='w-full p-3 rounded-lg bg-white/50 dark:bg-white/5 border border-gray-300/40 dark:border-white/20 backdrop-blur-sm outline-none focus:ring-2 focus:ring-cyan-400'
         />
       </form>
       <PromptCardList 
