@@ -29,6 +29,10 @@ interface PromptCardProps {
 
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }: PromptCardProps) => {
+
+  const { data: session } = useSession();
+  const pathname = usePathname();
+  const router = useRouter();
   const [copied, setCopied] = useState('');
 
   const handleCopy = (prompt: string) => {
@@ -38,7 +42,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }: PromptCa
   }
 
   return (
-    <div className='prompt_card'>
+    <div className='flex flex-col rounded-lg border border-gray-300/40 dark:border-white/20 bg-white/50 dark:bg-white/5 p-6 backdrop-blur-sm'>
       <div className='flex justify-between items-start gap-5'>
         <div className='flex-1 flex justify-start items-center gap-3 cursor-pointer'>
           <Image
@@ -53,7 +57,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }: PromptCa
             <p className='text-sm text-gray-500'>{post.creator?.email ?? 'No email available'}</p>
           </div>
         </div>
-        <div className='copy_btn' onClick={() => handleCopy && handleCopy(post.prompt)}>
+        <div className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-300/40 dark:border-white/20 bg-white/50 dark:bg-white/5 backdrop-blur-sm' onClick={() => handleCopy && handleCopy(post.prompt)}>
           <Image
             src={copied === post.prompt ? '/assets/icons/tick.svg' : '/assets/icons/copy.svg'}
             alt='copy_icon'
@@ -69,6 +73,23 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }: PromptCa
       >
         {post.tag ?? 'No tag available'}
       </p>
+
+      {session?.user.id === post.creator?._id && pathname === '/profile' && (
+        <div className='mt-5 flex-center gap-4 border-t border-gray-300/40 dark:border-white/20 pt-3'>
+          <p 
+            className='text-sm green_gradient cursor-pointer'
+            onClick={handleEdit}
+          >
+            Edit
+          </p>
+          <p 
+            className='text-sm green_gradient cursor-pointer'
+            onClick={handleDelete}
+          >
+            Delete
+          </p>
+        </div>
+      )}
     </div>
   )
 }

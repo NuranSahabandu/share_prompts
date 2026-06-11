@@ -1,12 +1,13 @@
 import { connectToDB } from "@/utils/database";
 import Prompt from "@/models/prompt";
 
-export const GET = async (request: Request, { params }: { params: { id: string } }) => {
+export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     try{
         await connectToDB();
 
+        const { id } = await params;
         const prompts = await Prompt.find({
-            creator: params.id
+            creator: id
         }).populate("creator");
         
         return new Response(JSON.stringify(prompts), { status: 200 });

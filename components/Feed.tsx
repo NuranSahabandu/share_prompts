@@ -25,7 +25,7 @@ interface PromptCardListProps {
 
 const PromptCardList = ({ data, handleTagClick }: PromptCardListProps) => {
   return (
-    <div className='mt-16 prompt_layout'>
+    <div className='mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
       {data.map((post) => (
         <PromptCard 
           key={post._id} 
