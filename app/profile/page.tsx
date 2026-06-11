@@ -12,7 +12,7 @@ const MyProfile = () => {
 
     const { data: session } = useSession();
 
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<{ _id?: string; prompt: string; tag?: string; creator?: { _id?: string; username?: string; email?: string; image?: string } }[]>([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -26,12 +26,20 @@ const MyProfile = () => {
         }
     }, [session?.user.id])
 
-    const handleEdit = ( post ) => {
+    const handleEdit = (post: { _id?: string }) => {
         Router.push(`/update-prompt?id=${post._id}`);
     }
 
-    const handleDelete = async ( post ) => {
-        
+    const handleDelete = async (post: { _id?: string }) => {
+        const hasConfirmed = confirm('Are you sure you want to delete this prompt?');
+        if (!hasConfirmed) return;
+
+        try {
+            await fetch(`/api/prompt/${post._id}`, { method: 'DELETE' });
+            setPosts((prev) => prev.filter((p) => p._id !== post._id));
+        } catch (error) {
+            console.log(error);
+        }
     }
 
   return (

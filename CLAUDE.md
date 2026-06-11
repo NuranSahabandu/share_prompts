@@ -38,20 +38,28 @@ NEXTAUTH_SECRET=
 - `models/prompt.ts` — `{ creator: ObjectId → User, prompt: string, tag: string }`.
 
 **API Routes** (all under `app/api/`):
-- `GET /api/prompt` — fetch all prompts, populated with creator. File is `.js` (not `.ts`).
-- `POST /api/prompt/new` — create a prompt; expects `{ userId, prompt, tag }` in the JSON body.
+- `GET /api/prompt` — fetch all prompts, populated with creator.
+- `POST /api/prompt/new` — create a prompt; expects `{ userId, prompt, tag }` in the JSON body with `Content-Type: application/json`.
+- `GET /api/prompt/[id]` — fetch a single prompt by MongoDB `_id`.
+- `PATCH /api/prompt/[id]` — update `prompt` and `tag` fields of an existing prompt.
+- `DELETE /api/prompt/[id]` — delete a prompt by `_id`.
 - `GET /api/users/[id]/posts` — fetch all prompts created by a specific user (by MongoDB `_id`), populated with creator.
 - `[...nextauth]` — NextAuth handler.
 
+**Next.js 16 note**: All dynamic route handlers receive `params` as a `Promise`. Always `await params` before accessing properties: `const { id } = await params`.
+
+**Protected routes**: `middleware.ts` (project root) re-exports NextAuth middleware, protecting `/profile`, `/create-prompt`, and `/update-prompt`. Unauthenticated requests are redirected to sign-in.
+
 **Pages / Client Components**:
 - `app/page.tsx` — home, renders `<Feed>`.
-- `app/create-prompt/page.tsx` — `'use client'`, uses `useSession` to get `userId` for the POST body, then delegates rendering to `<Form type="Create">`.
-- `app/profile/page.tsx` — `'use client'`, renders the current user's profile. Fetches `/api/users/{id}/posts` on mount using `session.user.id`, then passes results to `<Profile>`. `handleEdit` and `handleDelete` are stubbed.
-- `components/Feed.tsx` — `'use client'`, fetches `/api/prompt` on mount, renders `PromptCardList`. Search input exists in the UI but `handleSearchChange` is stubbed (filtering not yet implemented).
-- `components/Profile.tsx` — displays a user's profile header (`name`, `desc`) and their prompt list. Receives `{ name, desc, data, handleEdit, handleDelete }`. Prompt list rendering is not yet wired up (stub).
-- `components/PromptCard.tsx` — stub, not yet implemented.
+- `app/create-prompt/page.tsx` — `'use client'`, uses `useSession` to get `userId` for the POST body, delegates rendering to `<Form type="Create">`.
+- `app/update-prompt/page.tsx` — `'use client'`, reads `?id` from `useSearchParams`, fetches existing prompt via `GET /api/prompt/[id]`, renders `<Form type="Update">`, PATCHes on submit, redirects to `/profile`. Wrapped in `<Suspense>` for `useSearchParams`.
+- `app/profile/page.tsx` — `'use client'`, fetches current user's prompts via `/api/users/${session.user.id}/posts`. `handleEdit` navigates to `/update-prompt?id=...`; `handleDelete` calls `DELETE /api/prompt/[id]` then filters the post from local state.
+- `components/Feed.tsx` — `'use client'`, fetches `/api/prompt` on mount, renders `PromptCardList`. Search input exists in the UI but filtering is not yet implemented.
+- `components/Profile.tsx` — displays profile header (`name`, `desc`) and maps `data` into `<PromptCard>` list. Receives `{ name, desc, data: Prompt[], handleEdit: (post) => void, handleDelete: (post) => void }`.
+- `components/PromptCard.tsx` — renders a prompt card with copy-to-clipboard. Shows Edit/Delete actions when `session.user.id === post.creator._id` and `pathname === '/profile'`.
 - `components/Form.tsx` — shared controlled form for create/edit flows; receives `{ type, post, setPost, submitting, handleSubmit }`.
-- `components/Nav.tsx` — responsive nav; desktop and mobile layouts coexist in the same component gated by Tailwind `sm:` breakpoints.
+- `components/Nav.tsx` — responsive nav; desktop and mobile layouts coexist in the same component gated by Tailwind `sm:` breakpoints. Sign-out redirects to `/` via `callbackUrl`.
 
 **Path alias**: `@/` maps to the project root (`tsconfig.json` `paths`).
 

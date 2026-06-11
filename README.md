@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Share Prompts
+
+An open-source AI prompt sharing platform where users can discover, create, edit, and delete AI prompts. Built with Next.js 16, MongoDB, and Google OAuth.
+
+## Features
+
+- Google OAuth sign-in / sign-out
+- Browse all community prompts on the home feed
+- Search prompts by tag or username
+- Create, edit, and delete your own prompts
+- Personal profile page showing your prompts
+- Protected routes — unauthenticated users are redirected automatically
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Database**: MongoDB via Mongoose
+- **Auth**: NextAuth v4 (Google OAuth)
+- **Styling**: Tailwind CSS v4
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+
+- A MongoDB database (e.g. MongoDB Atlas)
+- A Google OAuth app ([Google Cloud Console](https://console.cloud.google.com/))
+
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+GOOGLE_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install & Run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev      # Start dev server
+npm run build    # Production build
+npm run lint     # ESLint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  api/
+    auth/          # NextAuth handler
+    prompt/        # GET all, POST new, GET/PATCH/DELETE by id
+    users/[id]/    # GET prompts by user
+  create-prompt/   # Create a new prompt
+  update-prompt/   # Edit an existing prompt
+  profile/         # Current user's profile
+components/
+  Nav.tsx          # Navigation with sign-in/out
+  Feed.tsx         # Home feed with search
+  PromptCard.tsx   # Individual prompt card
+  Profile.tsx      # Profile page layout
+  Form.tsx         # Shared create/edit form
+models/
+  user.ts          # User schema
+  prompt.ts        # Prompt schema
+utils/
+  database.ts      # MongoDB connection
+middleware.ts      # Protects /profile, /create-prompt, /update-prompt
+```
